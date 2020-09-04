@@ -20,6 +20,11 @@
             </intent-filter>
         </activity>
         <activity android:name=".WalkActivity" />
+        <receiver
+            android:name=".TimeReceiver"
+            android:enabled="true"
+            android:exported="true">
+        </receiver>
     </application>
 
 </manifest>
