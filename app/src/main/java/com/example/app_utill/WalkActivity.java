@@ -14,8 +14,11 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+
 import static android.content.Intent.ACTION_TIME_CHANGED;
 
 public class WalkActivity extends AppCompatActivity implements SensorEventListener {
@@ -29,6 +32,16 @@ public class WalkActivity extends AppCompatActivity implements SensorEventListen
     WebView wv_main;
     //현재 걸음 수
     private int mSteps = 0;
+    private long now = System.currentTimeMillis();
+
+    Date time = new Date(now);
+    SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd");
+    String getTime = simpleDate.format(time);
+    String valid_until = "2020-09-07";
+
+    Calendar tomorrowCalendar = Calendar.getInstance();
+    Date date2 = tomorrowCalendar.getTime();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,12 +55,10 @@ public class WalkActivity extends AppCompatActivity implements SensorEventListen
             Toast.makeText(this, "No step detect sensor", Toast.LENGTH_SHORT).show();
         }
 
-        long now = System.currentTimeMillis();
-        Date time = new Date(now);
-        SimpleDateFormat simpleDate = new SimpleDateFormat("yyyy-MM-dd, hh:mm");
         date = findViewById(R.id.date);
-        String getTime = simpleDate.format(time);
         date.setText(getTime);
+
+        tomorrowCalendar.add(Calendar.DAY_OF_MONTH,1);
 
         wv_main = (WebView) findViewById(R.id.wv_main);
         WebSettings webSettings = wv_main.getSettings();
@@ -66,7 +77,7 @@ public class WalkActivity extends AppCompatActivity implements SensorEventListen
         timeReceiver = new TimeReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction(ACTION_TIME_CHANGED);
-        this.registerReceiver(timeReceiver,intentFilter);
+        this.registerReceiver(timeReceiver, intentFilter);
     }
 
     @Override
@@ -87,13 +98,17 @@ public class WalkActivity extends AppCompatActivity implements SensorEventListen
         if (sensorEvent.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
 
             //stepcountsenersor는 앱이 꺼지더라도 초기화 되지않는다. 그러므로 우리는 초기값을 가지고 있어야한다.
-//            if () {
-//                // initial value
+//            if (getTime.compareTo(valid_until) > 0 || getTime.compareTo(valid_until) < 0) {
 //                mCounterSteps = (int) sensorEvent.values[0];
 //            }
+            if (mCounterSteps < 1) {
+                // initial value
+                mCounterSteps = (int) sensorEvent.values[0];
+            }
             //리셋 안된 값 + 현재값 - 리셋 안된 값
             mSteps = (int) sensorEvent.values[0] - mCounterSteps;
             walknum.setText("걸음수 : " + Integer.toString(mSteps));
+
         }
     }
 

@@ -7,7 +7,7 @@ import android.content.Intent;
 public class TimeReceiver extends BroadcastReceiver {
 
 
-    @Override
+        @Override
     public void onReceive(Context context, Intent intent) {
 
         final String action = intent.getAction();
