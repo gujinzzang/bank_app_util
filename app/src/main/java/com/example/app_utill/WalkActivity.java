@@ -58,7 +58,7 @@ public class WalkActivity extends AppCompatActivity implements SensorEventListen
         date = findViewById(R.id.date);
         date.setText(getTime);
 
-        tomorrowCalendar.add(Calendar.DAY_OF_MONTH,1);
+        tomorrowCalendar.add(Calendar.DAY_OF_MONTH, 1);
 
         wv_main = (WebView) findViewById(R.id.wv_main);
         WebSettings webSettings = wv_main.getSettings();
@@ -90,30 +90,28 @@ public class WalkActivity extends AppCompatActivity implements SensorEventListen
     protected void onPause() {
         super.onPause();
         sensorManager.unregisterListener(this);
-        unregisterReceiver(timeReceiver);
     }
 
     @Override
     public void onSensorChanged(SensorEvent sensorEvent) {
         if (sensorEvent.sensor.getType() == Sensor.TYPE_STEP_COUNTER) {
 
-            //stepcountsenersor는 앱이 꺼지더라도 초기화 되지않는다. 그러므로 우리는 초기값을 가지고 있어야한다.
-//            if (getTime.compareTo(valid_until) > 0 || getTime.compareTo(valid_until) < 0) {
+            //stepcount sensor는 앱이 꺼지더라도 초기화 되지않는다. 그러므로 우리는 초기값을 가지고 있어야한다.
+            if (getTime.compareTo(valid_until) > 0 || getTime.compareTo(valid_until) < 0) {
+                mCounterSteps = (int) sensorEvent.values[0];
+
+            }
+//            if (mCounterSteps < 1) {
+//                // initial value
 //                mCounterSteps = (int) sensorEvent.values[0];
 //            }
-            if (mCounterSteps < 1) {
-                // initial value
-                mCounterSteps = (int) sensorEvent.values[0];
-            }
             //리셋 안된 값 + 현재값 - 리셋 안된 값
             mSteps = (int) sensorEvent.values[0] - mCounterSteps;
             walknum.setText("걸음수 : " + Integer.toString(mSteps));
-
         }
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int i) {
-
     }
 }
